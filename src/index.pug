@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+html(lang="en")
+  head
+    link(rel="icon", href="./assets/favicon.ico")
+    link(rel="stylesheet", href="../node_modules/reveal.js/css/reveal.css")
+    link(rel="stylesheet", href="../node_modules/reveal.js/css/theme/black.css")
+    link(rel="stylesheet", href="../node_modules/font-awesome/css/font-awesome.min.css")
+    link(rel="stylesheet", href="../node_modules/reveal.js/lib/css/monokai.css")
+    link(rel="stylesheet", href="./css/index.css")
+    title YWC Programmer Talk: รู้จัก Scala ที่ไม่ใช่โรงหนัง by peawyoyoyin
+  body
+    .reveal
+      .slides
+        include slides/1-cover.pug
+        include slides/2-introduction.pug
+        include slides/3-outline.pug
+        include slides/4-language-overview.pug
+        include slides/5-scala-features.pug
+    script(src="./index.js")

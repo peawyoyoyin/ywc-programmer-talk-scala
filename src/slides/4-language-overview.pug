@@ -1,0 +1,55 @@
+section
+  section
+    h2 Scala Introduction
+    ul
+      li Compiled Language, Strong Typed
+      li Runs on 
+        strong JVM
+      li OOP, Functional
+  section
+    h2 Basic syntax
+    pre
+      code.lang-scala(data-trim).
+        object HelloWorld {
+          def main(args: Array[String]): Unit = {
+            println("hello world!")
+          }
+        }
+  section
+    h2 conditionals, loops
+    pre
+      code.lang-scala(data-trim,style="padding-bottom:1em;overflow:hidden;").
+        object FizzBuzz {
+          def main(args: Array[String]): Unit = {
+            for (num &lt;- 0 to 100) {
+              if (num % 3 == 0 && num % 5 == 0) {
+                println("FizzBuzz")
+              } else if (num % 3 == 0) {
+                println("Fizz")
+              } else if (num % 5 == 0) {
+                println("Buzz")
+              } else {
+                println(num)
+              }
+            }
+          }
+        }
+  section
+    h2 classes, methods
+    pre
+      code.lang-scala(data-trim,style="padding-bottom:1em;overflow:hidden;").
+        class Dog(name: String) {
+          private val legs: Int = 4
+
+          def run(): Unit = {
+            println(this.name + " runs with " + this.legs + " legs")
+          }
+        }
+
+        object Main {
+          def main(args: Array[String]): Unit = {
+            val dog = new Dog("spot")
+
+            dog.run()
+          }
+        }

@@ -1,0 +1,18 @@
+{
+  "name": "ywc-programmer-talk-pug",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "parcel-bundler": "^1.12.4",
+    "pug": "^2.0.4"
+  },
+  "scripts": {
+    "dev": "parcel src/index.pug"
+  },
+  "dependencies": {
+    "font-awesome": "^4.7.0",
+    "highlight.js": "^9.18.0",
+    "reveal.js": "^3.8.0"
+  }
+}

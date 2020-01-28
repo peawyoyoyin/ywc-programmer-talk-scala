@@ -1,0 +1,40 @@
+section
+  h2 Java Interop
+    pre
+      code.lang-scala(data-trim,style="font-size:0.4em;line-height:1.1").
+        class Author(val firstName: String,
+            val lastName: String) extends Comparable[Author] {
+
+          override def compareTo(that: Author) = {
+            val lastNameComp = this.lastName compareTo that.lastName
+            if (lastNameComp != 0) lastNameComp
+            else this.firstName compareTo that.firstName
+          }
+        }
+
+        object Author {
+          def loadAuthorsFromFile(file: java.io.File): List[Author] = ???
+        }
+    pre
+      code.lang-java(data-trim,style="font-size:0.4em;line-height:1.1").
+        import static scala.collection.JavaConversions.asJavaCollection;
+
+        public class App {
+            public List&lt;Author&gt; loadAuthorsFromFile(File file) {
+                return new ArrayList&lt;Author&gt;(asJavaCollection(
+                    Author.loadAuthorsFromFile(file)));
+            }
+
+            public void sortAuthors(List&lt;Author&gt; authors) {
+                Collections.sort(authors);
+            }
+
+            public void displaySortedAuthors(File file) {
+                List&lt;Author&gt; authors = loadAuthorsFromFile(file);
+                sortAuthors(authors);
+                for (Author author : authors) {
+                    System.out.println(
+                        author.lastName() + ", " + author.firstName());
+                }
+            }
+        }

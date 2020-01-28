@@ -1,0 +1,8 @@
+node_modules/
+
+# build folder
+dist/
+# parcel cache
+.cache/
+
+yarn-error.log

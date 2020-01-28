@@ -1,0 +1,21 @@
+#img-profile {
+  max-width: 20vw;
+}
+
+.container {
+  display: flex;
+}
+
+.container-column {
+  justify-content: center;
+  flex: 1;
+}
+
+.profile-detail {
+  font-size: 0.85em;
+  margin-bottom: 1em;
+}
+
+.profile-contacts {
+  font-size: 0.60em;
+}
