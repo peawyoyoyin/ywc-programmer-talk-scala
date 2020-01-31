@@ -1,0 +1,54 @@
+section
+  h2 Pattern Matching
+  p arguably most powerful feature in scala
+  pre
+    code.lang-scala(data-trim).
+      val nextCoord = direction match {
+        case 'U' =&gt; (x, y+1)
+        case 'D' =&gt; (x, y-1)
+        case 'R' =&gt; (x+1, y)
+        case 'L' =&gt; (x-1, y)
+      }
+section
+  h2 Pattern Matching!
+  pre
+    code.lang-scala(data-trim).
+      abstract class Animal(legs: Int)
+
+      // case classes provide immutable data classes...
+      case class Dog(name: String) extends Animal(4)
+      case class Spider(color: String) extends Animal(8)
+
+      val anAnimal: Animal = Spider("black")
+
+      // that can be used with pattern matching!
+      val reaction = anAnimal match {
+        case Dog(name) =&gt; s"Aww cute $name!"
+        case Spider(color) =&gt; s"Yikes! a $color spider!"
+      }
+section
+  h2 Pattern Matching!!
+  p with Monads
+  pre
+    code.lang-scala(data-trim).
+      def handleErrorCode(errorCode: Option[String]): Response = {
+        errorCode match {
+          case Some(code) =&gt; ErrorResponse(
+            status = Failed,
+            message = s"processed failed with code $code"
+          )
+          case None =&gt; SuccessResponse
+        }
+      }
+section
+  h2 Pattern Matching!!!
+  p with Conditions
+  pre
+    code.lang-scala(data-trim).
+      def calculateFee(balance: Option[Int]): Int = {
+        balance match {
+          case Some(amount) if amount &gt; 1000 =&gt; amount * taxRate
+          case Some(amount) =&gt; 20
+          case None =&gt; 0
+        }
+      }

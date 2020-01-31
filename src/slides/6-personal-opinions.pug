@@ -1,0 +1,96 @@
+section
+  section
+    h2 How it feels writing scala
+    p AKA personal opinions
+  section
+    h2 (+) Easy to pickup
+    p Coming from a Java/JS background, Scala was easy enough to just pickup
+    pre
+      code.lang-scala(data-trim).
+        class BookingsService @Inject(userService: UserService) 
+          extends ApiService with Logging {
+          
+          def createBooking(request: CreateBookingRequest)
+            : Future[CreateBookingResults] = { ... }
+
+          private def getBookerName(request: CreateBookingRequest)
+            : String = { ... }
+
+          // very similar to Java
+        }
+  section
+    h3 (+) Solves classical problems
+    
+    ul
+      li NPEs eliminated by using 
+        code Option
+        |  s
+      li Other exception handling guaranteed with 
+        code Try
+        |  s
+      li We can almost always say that exceptions come from 
+        em Java
+        |  part of the application!
+  section
+    h3 (+) Functional Goodness
+
+    ul
+      li More deterministic
+      li Easy to write tests
+      li Easy to define abstractions
+  section
+    h3 (+) Java Interop
+    p Gives access to awesome libraries:
+
+    ul
+      li jdbc (database connections)
+      li Guice (dependency injection)
+      li Mockito (mocks)
+      li Java standard libraries
+  section
+    h3 (-) 
+      em Sometimes
+      |  hard to understand
+    ul
+      li Sometimes it's too much
+      li Immutability sometimes make things hard
+      li More than one way to do one thing
+      li 
+       a(href="https://www.scala-lang.org/api/2.12.10/") Scala docs
+       |  is almost like Java docs - Super hard to read!
+  section
+    h3 (-) Slow Compilation
+    p I 
+      em really
+      |  mean it.
+    p Due to being a flexible language, Scala is very hard to compile
+    p With its own build tool 
+      em sbt 
+      |  (
+      strike shitty
+      |  scala build tool), it's even more frustrating
+
+  section
+    h3 (-) Scala build tool
+    p Configured using .sbt (written in Scala) files.
+    | powerful, but c̙̱̫͖̤̹̹̰̀́͜͠ḫ̗͖͇͙̕a̸͏̢̭̦̣̦͉̩̘̟̝̣̪̕o͏̵̣̺̠̠̻̱̞͚͖͇͉̘͜ͅͅt̴̛̹͚̘̖͖͎̘́i̢̳͓̞̣̙̣͚͕͠c̷̨͈̻͇̠̪͙̱͍̕͜͝
+
+    pre
+      code.lang-scala(data-trim,style="font-size:0.75em;line-height:1.2;").
+        ThisBuild / scalaVersion := "2.12.7"
+        ThisBuild / organization := "com.example"
+
+        val scalaTest = "org.scalatest" %% "scalatest" % "3.0.5"
+
+        lazy val hello = (project in file("."))
+          .settings(
+            name := "Hello",
+            libraryDependencies += "com.eed3si9n" %% "gigahorse-okhttp" % "0.3.1",
+            libraryDependencies += scalaTest % Test,
+          )
+
+        lazy val helloCore = (project in file("core"))
+          .settings(
+            name := "Hello Core",
+            libraryDependencies += scalaTest % Test,
+          )

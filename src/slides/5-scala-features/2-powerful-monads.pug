@@ -1,0 +1,41 @@
+section
+  h2 Powerful Monads!
+  p Comfortably handle absence with 
+    code Option
+  pre
+    code.lang-scala(data-trim).
+      // Option[T] can either be Some(x: T) or None
+      // Here we are applying a monad transformer
+      def calculateBalance(
+        accountOpt: Option[Account], amount: Decimal
+      ): Option[Decimal] = {
+        // return None if accountOpt is None
+        accountOpt.map(
+          account =&gt; account.balance - amount
+        )
+      }
+section
+  h2 Powerful Monads!
+  p Handle exceptional flows with 
+    code Try
+  pre
+    code.lang-scala(data-trim,style="font-size:0.75em;line-height:1.2;").
+      // Try[T] can either be Success(x: T) or Failed(e: Exception)
+      // Try[T].map(transformer) will only apply transformer to Success
+      def getBalance(fileName: String): Try[BigDecimal] = Try {
+        // this can throw IOException
+        val lines = Files.readAllLines(
+          Paths.get(fileName), Charsets.UTF_8
+        )
+
+        // this can throw NumberFormatException
+        BigDecimal(lines(0).split(" ")(1)) 
+      }
+
+      // ...
+
+      // handle exceptions later
+      getBalance("file.csv") recoverWith {
+        case IOException =&gt; Failure(AppFailedException("Error reading file"))
+        case NumberFormatException =&gt; Failure(AppFailedException("File corrupted"))
+      }

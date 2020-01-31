@@ -1,0 +1,33 @@
+section
+  h2 Concurrency
+  p Introducing 
+    code Future
+    |  s...
+  pre
+    code.lang-scala(data-trim).
+      val f1 = Future { someBlockingCode() }
+
+      val f2 = Future { someOtherBlockingCode() }
+
+      val multiplication = for(a &lt;- f1;b &lt;- f2) yield a*b
+      for (product &lt;- multiplication) println(product)
+
+      // does not get blocked!
+      println("main thread")
+section
+  h2 Concurrency
+  p Introducing 
+    code Future
+    |  s as monads!
+  pre
+    code.lang-scala(data-trim).
+      val f1 = Future {
+        Thread.sleep(4000)
+        "result"
+      }
+
+      val lengthFuture = f1.map(result =&gt; result.length)
+
+      lengthFuture.onComplete { length =&gt;
+        println(length)
+      }

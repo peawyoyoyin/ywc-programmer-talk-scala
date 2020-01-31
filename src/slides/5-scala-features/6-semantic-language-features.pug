@@ -1,0 +1,72 @@
+section
+  h3 And other semantic features!
+  h4 Implicits
+  p Automatically found from scope
+  pre
+    code.lang-scala(data-trim).
+      implicit val multiplier = 2
+      def multiply(value: Int)(implicit by: Int) = value * by
+      
+      multiply(5) // multiplier is implicitly passed to "by"
+
+  small Thanks 
+    a(href="http://baddotrobot.com/blog/2015/07/03/scala-implicit-parameters/") source
+    |  for example
+section
+  h4 XML Literals
+  pre
+    code.lang-scala(data-trim).
+      class MyScalatraServlet extends MyScalatraWebAppStack {
+        get(&quot;/&quot;) {
+          &lt;html&gt;
+            &lt;body&gt;
+              &lt;h1&gt;Hello, world!&lt;/h1&gt;
+              Say &lt;a href=&quot;hello-scalate&quot;&gt;hello to Scalate&lt;/a&gt;.
+            &lt;/body&gt;
+          &lt;/html&gt;
+        }
+      }
+  p From 
+    a(href="http://scalatra.org/") Scalatra
+    |  web framework 
+  small (Thanks 
+    a(href="https://alvinalexander.com/scala/how-to-create-simple-web-services-with-scalatra") source
+    |  for example)
+section
+  h4 Extensible Syntax
+  pre
+    code.lang-scala(data-trim,style="font-size:0.75em;line-height:1.2;").
+      class ExampleSpec extends FlatSpec with Matchers {
+        "A Stack" should "pop values in last-in-first-out order" in {
+          val stack = new Stack[Int]
+          stack.push(1)
+          stack.push(2)
+          stack.pop() should be (2)
+          stack.pop() should be (1)
+        }
+
+        it should "throw NoSuchElementException if an empty stack is popped" in {
+          val emptyStack = new Stack[Int]
+          a [NoSuchElementException] should be thrownBy {
+            emptyStack.pop()
+          } 
+        }
+      }
+  p Actual 
+    a(href="http://www.scalatest.org/") ScalaTest
+    |  unit test example
+section
+  h4 Extensible Syntax
+  p Another Example: Operator Overloading
+    pre
+      code.lang-scala(data-trim).
+        case class Vec(x: Double, y: Double) {
+          def +(that: Vec) = Vec(this.x + that.x, this.y + that.y)
+        }
+
+        val vector1 = Vec(1.0, 1.0)
+        val vector2 = Vec(2.0, 2.0)
+
+        val vector3 = vector1 + vector2
+  small example stolen from 
+    a(href="https://scala-lang.org") scala-lang.org

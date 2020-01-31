@@ -4,11 +4,13 @@
   "main": "index.js",
   "license": "MIT",
   "devDependencies": {
+    "gh-pages": "^2.2.0",
     "parcel-bundler": "^1.12.4",
     "pug": "^2.0.4"
   },
   "scripts": {
-    "dev": "parcel src/index.pug"
+    "dev": "parcel src/index.pug",
+    "build": "parcel build src/index.pug"
   },
   "dependencies": {
     "font-awesome": "^4.7.0",
