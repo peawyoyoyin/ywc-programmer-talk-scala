@@ -1,0 +1,227 @@
+<!DOCTYPE html><html lang="en"><head><link rel="icon" href="/favicon.d0cfdd24.ico"><link rel="stylesheet" href="/reveal.057ac062.css"><link rel="stylesheet" href="/black.ad0adc30.css"><link rel="stylesheet" href="/font-awesome.min.2413bb80.css"><link rel="stylesheet" href="/monokai.14ace8f2.css"><link rel="stylesheet" href="/css.e1bfd4b7.css"><title>YWC Programmer Talk: รู้จัก Scala ที่ไม่ใช่โรงหนัง by peawyoyoyin</title></head><body><div class="reveal"><div class="slides"><section> <h2>รู้จัก Scala ที่ไม่ใช่โรงหนัง</h2><p>by peawyoyoyin</p></section><section><h2>รู้จักกันสักนิด</h2><div class="container" id="profile"><div class="container-column" style="flex:1;"><img src="/profile.0d69229b.jpg" alt="profile" id="img-profile"></div><div class="container-column" style="flex:3;"><div class="profile-detail"><span>เปียว (Peaw)</span><br><sub><small>(พิริยพงษ์ เลาพงษ์สิต)</small></sub><ul><li>YWC 17 สาขา Programming</li><li>Software Engineer @ Agoda Services<ul><li>day-to-day เขียน Scala, C#</li></ul></li><li>Computer Engineering @ CU (CP42)<ul><li>proud member of <a href="https://thinc.in.th">Thinc.</a></li></ul></li></ul></div><div class="profile-contacts"><i class="fa fa-facebook-square"></i> Piriyapong Laopongsit<br><i class="fa fa-twitter"></i> @peawyoyoyin2</div></div></div></section><section><h2>พูดเรื่องอะไรบ้าง</h2><ul><li>Scala Introduction: Interesting Features & Concepts</li><li>How it feels to actually write Scala: Pros/Cons</li><li>How people use Scala IRL</li></ul></section><section><section><h2>Scala Introduction</h2><ul><li>Compiled Language, Strong Typed</li><li>Runs on <strong>JVM</strong></li><li>OOP, Functional</li></ul></section><section><h2>Basic syntax</h2><pre><code class="lang-scala" data-trim="data-trim">object HelloWorld {
+  def main(args: Array[String]): Unit = {
+    println("hello world!")
+  }
+}</code></pre></section><section><h2>conditionals, loops</h2><pre><code class="lang-scala" data-trim="data-trim" style="padding-bottom:1em;overflow:hidden;">object FizzBuzz {
+  def main(args: Array[String]): Unit = {
+    for (num &lt;- 0 to 100) {
+      if (num % 3 == 0 && num % 5 == 0) {
+        println("FizzBuzz")
+      } else if (num % 3 == 0) {
+        println("Fizz")
+      } else if (num % 5 == 0) {
+        println("Buzz")
+      } else {
+        println(num)
+      }
+    }
+  }
+}</code></pre></section><section><h2>classes, methods</h2><pre><code class="lang-scala" data-trim="data-trim" style="padding-bottom:1em;overflow:hidden;">class Dog(name: String) {
+  private val legs: Int = 4
+
+  def run(): Unit = {
+    println(this.name + " runs with " + this.legs + " legs")
+  }
+}
+
+object Main {
+  def main(args: Array[String]): Unit = {
+    val dog = new Dog("spot")
+
+    dog.run()
+  }
+}</code></pre></section></section><section><section><h2>Scala Features</h2></section><section><h2>Java Interop<pre><code class="lang-scala" data-trim="data-trim" style="font-size:.4em;line-height:1.1">class Author(val firstName: String,
+    val lastName: String) extends Comparable[Author] {
+
+  override def compareTo(that: Author) = {
+    val lastNameComp = this.lastName compareTo that.lastName
+    if (lastNameComp != 0) lastNameComp
+    else this.firstName compareTo that.firstName
+  }
+}
+
+object Author {
+  def loadAuthorsFromFile(file: java.io.File): List[Author] = ???
+}</code></pre><pre><code class="lang-java" data-trim="data-trim" style="font-size:.4em;line-height:1.1">import static scala.collection.JavaConversions.asJavaCollection;
+
+public class App {
+    public List&lt;Author&gt; loadAuthorsFromFile(File file) {
+        return new ArrayList&lt;Author&gt;(asJavaCollection(
+            Author.loadAuthorsFromFile(file)));
+    }
+
+    public void sortAuthors(List&lt;Author&gt; authors) {
+        Collections.sort(authors);
+    }
+
+    public void displaySortedAuthors(File file) {
+        List&lt;Author&gt; authors = loadAuthorsFromFile(file);
+        sortAuthors(authors);
+        for (Author author : authors) {
+            System.out.println(
+                author.lastName() + ", " + author.firstName());
+        }
+    }
+}</code></pre></h2></section><section><h2>Powerful Monads!</h2><p>Comfortably handle absence with <code>Option</code></p><pre><code class="lang-scala" data-trim="data-trim">// Option[T] can either be Some(x: T) or None
+// Here we are applying a monad transformer
+def calculateBalance(
+  accountOpt: Option[Account], amount: Decimal
+): Option[Decimal] = {
+  // return None if accountOpt is None
+  accountOpt.map(
+    account =&gt; account.balance - amount
+  )
+}</code></pre></section><section><h2>Powerful Monads!</h2><p>Handle exceptional flows with <code>Try</code></p><pre><code class="lang-scala" data-trim="data-trim" style="font-size:.75em;line-height:1.2;">// Try[T] can either be Success(x: T) or Failed(e: Exception)
+// Try[T].map(transformer) will only apply transformer to Success
+def getBalance(fileName: String): Try[BigDecimal] = Try {
+  // this can throw IOException
+  val lines = Files.readAllLines(
+    Paths.get(fileName), Charsets.UTF_8
+  )
+
+  // this can throw NumberFormatException
+  BigDecimal(lines(0).split(" ")(1)) 
+}
+
+// ...
+
+// handle exceptions later
+getBalance("file.csv") recoverWith {
+  case IOException =&gt; Failure(AppFailedException("Error reading file"))
+  case NumberFormatException =&gt; Failure(AppFailedException("File corrupted"))
+}</code></pre></section><section><h2>Pattern Matching</h2><p>arguably most powerful feature in scala</p><pre><code class="lang-scala" data-trim="data-trim">val nextCoord = direction match {
+  case 'U' =&gt; (x, y+1)
+  case 'D' =&gt; (x, y-1)
+  case 'R' =&gt; (x+1, y)
+  case 'L' =&gt; (x-1, y)
+}</code></pre></section><section><h2>Pattern Matching!</h2><pre><code class="lang-scala" data-trim="data-trim">abstract class Animal(legs: Int)
+
+// case classes provide immutable data classes...
+case class Dog(name: String) extends Animal(4)
+case class Spider(color: String) extends Animal(8)
+
+val anAnimal: Animal = Spider("black")
+
+// that can be used with pattern matching!
+val reaction = anAnimal match {
+  case Dog(name) =&gt; s"Aww cute $name!"
+  case Spider(color) =&gt; s"Yikes! a $color spider!"
+}</code></pre></section><section><h2>Pattern Matching!!</h2><p>with Monads</p><pre><code class="lang-scala" data-trim="data-trim">def handleErrorCode(errorCode: Option[String]): Response = {
+  errorCode match {
+    case Some(code) =&gt; ErrorResponse(
+      status = Failed,
+      message = s"processed failed with code $code"
+    )
+    case None =&gt; SuccessResponse
+  }
+}</code></pre></section><section><h2>Pattern Matching!!!</h2><p>with Conditions</p><pre><code class="lang-scala" data-trim="data-trim">def calculateFee(balance: Option[Int]): Int = {
+  balance match {
+    case Some(amount) if amount &gt; 1000 =&gt; amount * taxRate
+    case Some(amount) =&gt; 20
+    case None =&gt; 0
+  }
+}</code></pre></section><section><h2>Concurrency</h2><p>Introducing <code>Future</code> s...</p><pre><code class="lang-scala" data-trim="data-trim">val f1 = Future { someBlockingCode() }
+
+val f2 = Future { someOtherBlockingCode() }
+
+val multiplication = for(a &lt;- f1;b &lt;- f2) yield a*b
+for (product &lt;- multiplication) println(product)
+
+// does not get blocked!
+println("main thread")</code></pre></section><section><h2>Concurrency</h2><p>Introducing <code>Future</code> s as monads!</p><pre><code class="lang-scala" data-trim="data-trim">val f1 = Future {
+  Thread.sleep(4000)
+  "result"
+}
+
+val lengthFuture = f1.map(result =&gt; result.length)
+
+lengthFuture.onComplete { length =&gt;
+  println(length)
+}</code></pre></section><section><h2>composition with traits</h2><p>like interfaces that can have implementations</p><pre><code class="lang-scala" data-trim="data-trim" style="font-size:.65em;line-height:1;">abstract class Spacecraft {
+  def engage(): Unit
+}
+
+trait CommandoBridge extends Spacecraft {
+  def engage(): Unit = {
+    for (_ &lt;- 1 to 3)
+      speedUp()
+  }
+  def speedUp(): Unit
+}
+
+trait PulseEngine extends Spacecraft {
+  val maxPulse: Int
+  var currentPulse: Int = 0
+  def speedUp(): Unit = {
+    if (currentPulse &lt; maxPulse)
+      currentPulse += 1
+  }
+}
+
+// StarCruiser will have speedUp() and engage()
+class StarCruiser extends Spacecraft
+                    with CommandoBridge
+                    with PulseEngine {
+  val maxPulse = 200
+}</code></pre></section><section><h3>And other semantic features!</h3><h4>Implicits</h4><p>Automatically found from scope</p><pre><code class="lang-scala" data-trim="data-trim">implicit val multiplier = 2
+def multiply(value: Int)(implicit by: Int) = value * by
+
+multiply(5) // multiplier is implicitly passed to "by"
+</code></pre><small>Thanks <a href="http://baddotrobot.com/blog/2015/07/03/scala-implicit-parameters/">source</a> for example</small></section><section><h4>XML Literals</h4><pre><code class="lang-scala" data-trim="data-trim">class MyScalatraServlet extends MyScalatraWebAppStack {
+  get(&quot;/&quot;) {
+    &lt;html&gt;
+      &lt;body&gt;
+        &lt;h1&gt;Hello, world!&lt;/h1&gt;
+        Say &lt;a href=&quot;hello-scalate&quot;&gt;hello to Scalate&lt;/a&gt;.
+      &lt;/body&gt;
+    &lt;/html&gt;
+  }
+}</code></pre><p>From <a href="http://scalatra.org/">Scalatra</a> web framework </p><small>(Thanks <a href="https://alvinalexander.com/scala/how-to-create-simple-web-services-with-scalatra">source</a> for example)</small></section><section><h4>Extensible Syntax</h4><pre><code class="lang-scala" data-trim="data-trim" style="font-size:.75em;line-height:1.2;">class ExampleSpec extends FlatSpec with Matchers {
+  "A Stack" should "pop values in last-in-first-out order" in {
+    val stack = new Stack[Int]
+    stack.push(1)
+    stack.push(2)
+    stack.pop() should be (2)
+    stack.pop() should be (1)
+  }
+
+  it should "throw NoSuchElementException if an empty stack is popped" in {
+    val emptyStack = new Stack[Int]
+    a [NoSuchElementException] should be thrownBy {
+      emptyStack.pop()
+    } 
+  }
+}</code></pre><p>Actual <a href="http://www.scalatest.org/">ScalaTest</a> unit test example</p></section><section><h4>Extensible Syntax</h4><p>Another Example: Operator Overloading<pre><code class="lang-scala" data-trim="data-trim">case class Vec(x: Double, y: Double) {
+  def +(that: Vec) = Vec(this.x + that.x, this.y + that.y)
+}
+
+val vector1 = Vec(1.0, 1.0)
+val vector2 = Vec(2.0, 2.0)
+
+val vector3 = vector1 + vector2</code></pre></p><small>example stolen from <a href="https://scala-lang.org">scala-lang.org</a></small></section></section><section><section><h2>How it feels writing scala</h2><p>AKA personal opinions</p></section><section><h2>(+) Easy to pickup</h2><p>Coming from a Java/JS background, Scala was easy enough to just pickup</p><pre><code class="lang-scala" data-trim="data-trim">class BookingsService @Inject(userService: UserService) 
+  extends ApiService with Logging {
+  
+  def createBooking(request: CreateBookingRequest)
+    : Future[CreateBookingResults] = { ... }
+
+  private def getBookerName(request: CreateBookingRequest)
+    : String = { ... }
+
+  // very similar to Java
+}</code></pre></section><section><h3>(+) Solves classical problems</h3><ul><li>NPEs eliminated by using <code>Option</code> s</li><li>Other exception handling guaranteed with <code>Try</code> s</li><li>We can almost always say that exceptions come from <em>Java</em> part of the application!</li></ul></section><section><h3>(+) Functional Goodness</h3><ul><li>More deterministic</li><li>Easy to write tests</li><li>Easy to define abstractions</li></ul></section><section><h3>(+) Java Interop</h3><p>Gives access to awesome libraries:</p><ul><li>jdbc (database connections)</li><li>Guice (dependency injection)</li><li>Mockito (mocks)</li><li>Java standard libraries</li></ul></section><section><h3>(-) <em>Sometimes</em> hard to understand</h3><ul><li>Sometimes it's too much</li><li>Immutability sometimes make things hard</li><li>More than one way to do one thing</li><li> <a href="https://www.scala-lang.org/api/2.12.10/">Scala docs</a> is almost like Java docs - Super hard to read!</li></ul></section><section><h3>(-) Slow Compilation</h3><p>I <em>really</em> mean it.</p><p>Due to being a flexible language, Scala is very hard to compile</p><p>With its own build tool <em>sbt </em> (<strike>shitty</strike> scala build tool), it's even more frustrating</p></section><section><h3>(-) Scala build tool</h3><p>Configured using .sbt (written in Scala) files.</p>powerful, but c̙̱̫͖̤̹̹̰̀́͜͠ḫ̗͖͇͙̕a̸͏̢̭̦̣̦͉̩̘̟̝̣̪̕o͏̵̣̺̠̠̻̱̞͚͖͇͉̘͜ͅͅt̴̛̹͚̘̖͖͎̘́i̢̳͓̞̣̙̣͚͕͠c̷̨͈̻͇̠̪͙̱͍̕͜͝<pre><code class="lang-scala" data-trim="data-trim" style="font-size:.75em;line-height:1.2;">ThisBuild / scalaVersion := "2.12.7"
+ThisBuild / organization := "com.example"
+
+val scalaTest = "org.scalatest" %% "scalatest" % "3.0.5"
+
+lazy val hello = (project in file("."))
+  .settings(
+    name := "Hello",
+    libraryDependencies += "com.eed3si9n" %% "gigahorse-okhttp" % "0.3.1",
+    libraryDependencies += scalaTest % Test,
+  )
+
+lazy val helloCore = (project in file("core"))
+  .settings(
+    name := "Hello Core",
+    libraryDependencies += scalaTest % Test,
+  )</code></pre></section></section><section><h2>Who actually uses Scala?</h2><ul><li>Twitter</li><li>Hadoop</li><li>Apache Spark</li><li>Agoda!</li></ul><p>Scala is currently at #16 PyPL index (Kotlin at #12)</p></section><section><h2>Thank you!</h2><p>Feel free to ask questions here</p><p>For more Scala, check out <a href="https://scala-lang.org">scala-lang.org</a></p></section></div></div><script src="/src.b72e0aa2.js"></script></body></html>
